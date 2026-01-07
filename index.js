@@ -83,7 +83,7 @@ function createLoginWindow() {
       nodeIntegration: true,
       contextIsolation: false,
     },
-    icon: path.join(__dirname, "build", "icon.png"),
+    icon: path.join(__dirname, "assets", "icon.png"),
     resizable: false,
   });
 
@@ -112,7 +112,7 @@ function createMainWindow(serverHost) {
       contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
     },
-    icon: path.join(__dirname, "build", "icon.png"),
+    icon: path.join(__dirname, "assets", "icon.png"),
   });
 
   const url = serverHost.startsWith("http")
@@ -123,7 +123,7 @@ function createMainWindow(serverHost) {
 
   // Explicitly set dock icon
   if (process.platform === 'darwin') {
-      const iconPath = path.join(__dirname, "build", "icon.png"); // Use standard png for dock
+      const iconPath = path.join(__dirname, "assets", "icon.png"); // Use standard png for dock
       try {
         const icon = nativeImage.createFromPath(iconPath);
         app.dock.setIcon(icon);
@@ -163,7 +163,7 @@ function createCompanionWindow(serverHost) {
       contextIsolation: false,
       preload: path.join(__dirname, "preload.js"),
     },
-    icon: path.join(__dirname, "build", "icon.png"),
+    icon: path.join(__dirname, "assets", "icon.png"),
     opacity: 0.90, // Lower opacity as requested
     title: '', // Ensure no title
   });
@@ -325,6 +325,13 @@ const createTray = () => {
              { label: 'Never', type: 'radio', checked: settings.trayVisibility === 'never', click: () => updateSetting('trayVisibility', 'never') },
         ]
     },
+    { type: 'separator' },
+    {
+        label: 'Start at Login',
+        type: 'checkbox',
+        checked: app.getLoginItemSettings().openAtLogin,
+        click: () => updateSetting('openAtLogin', !app.getLoginItemSettings().openAtLogin)
+    },
     { type: "separator" },
     { label: "Quit", role: "quit" },
   ]);
@@ -335,7 +342,7 @@ const createTray = () => {
       // But we can update the 'cached' menu if we want strictly dynamic.
       // actually, let's just recreate logic or update properties.
   } else {
-      const iconPath = path.join(__dirname, "build", "icon.png");
+      const iconPath = path.join(__dirname, "assets", "icon.png");
       const icon = nativeImage
         .createFromPath(iconPath)
         .resize({ width: 16, height: 16 });
@@ -372,6 +379,14 @@ const updateSetting = (key, value) => {
     if (key === 'position' && companionWindow) {
         const { x, y } = getWindowPosition(value);
         companionWindow.setPosition(x, y, true);
+    }
+
+    if (key === 'openAtLogin') {
+        app.setLoginItemSettings({
+            openAtLogin: value,
+            openAsHidden: true, // Optional: open hidden if desired
+            path: app.getPath('exe') // Helpful for some dev/dist scenarios
+        });
     }
 }
 
