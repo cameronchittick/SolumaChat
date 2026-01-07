@@ -1,7 +1,7 @@
 {
-  "name": "librechat-ui",
-  "productName": "LibreChat UI",
-  "description": "LibreChat UI is a desktop application for LibreChat",
+  "name": "soluma-chat",
+  "productName": "Soluma Chat",
+  "description": "Soluma Chat is a desktop application for LibreChat",
   "type": "module",
   "version": "1.4.0",
   "author": "@leikoilja",
@@ -31,7 +31,7 @@
     "publish": "github"
   },
   "devDependencies": {
-    "electron": "^33.2.1",
+    "electron": "^39.2.7",
     "electron-builder": "^25.1.8"
   },
   "dependencies": {

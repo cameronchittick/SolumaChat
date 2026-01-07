@@ -93,13 +93,17 @@ module.exports = function initializeShortcuts(globalShortcut, mainWindow) {
     const registerShortcuts = () => {
         for (const accelerator in shortcuts) {
             globalShortcut.register(accelerator, () => {
-                mainWindow.webContents.executeJavaScript(shortcuts[accelerator]);
+                if (mainWindow && !mainWindow.isDestroyed()) {
+                  mainWindow.webContents.executeJavaScript(shortcuts[accelerator]);
+                }
             });
         }
     };
 
     const unregisterShortcuts = () => {
-        globalShortcut.unregisterAll();
+        for (const accelerator in shortcuts) {
+            globalShortcut.unregister(accelerator);
+        }
     };
 
     mainWindow.on('focus', registerShortcuts);
